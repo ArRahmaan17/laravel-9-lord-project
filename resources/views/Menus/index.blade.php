@@ -1,65 +1,68 @@
 @extends('layouts.app', ['title' => 'Add Menus SideBar']);
 
 @section('content')
-    <div class="card">
-        <form action="/insert-menu" method="POST" autocomplete="off">
-            @csrf
-            <div class="card-header">
-                <h4>Server-side Validation</h4>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header col-12">
+                <h4 class="col-10">{{ $title }}</h4>
+                <a class="btn btn-success form-control" href="/add-menus">Tambah Menu</a>
             </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Your Menu Name</label>
-                    <input type="text" name="menu-name" class="form-control">
-                    <div class="valid-feedback">
-                        Good job!
-                    </div>
-                    <div class="invalid-feedback">
-                        Oh no! Email is invalid.
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-6">
-                            <label>Your Menu Route</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <i class="fas fa-route"></i>
-                                    </div>
-                                </div>
-                                <input type="text" name="menu-route" class="form-control">
-                                <div class="valid-feedback">
-                                    Good job!
-                                </div>
-                                <div class="invalid-feedback">
-                                    Oh no! Email is invalid.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <label>Your Parent Menu</label>
-                            <select name="parent-menu" class="form-control select2">
-                                <option value="0" selected='true'>0</option>
-                                @foreach ($navbar as $menu)
-                                    <option value="{{ $menu->id }}">{{ $menu->id }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group mb-0">
-                    <label>Your Menu Describtion</label>
-                    <textarea class="form-control" name="desc-menu"></textarea>
-                    <div class="invalid-feedback">
-                        Oh no! You entered an inappropriate word.
-                    </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-md">
+                        <tr>
+                            <th class="col-1">#</th>
+                            <th class="col-2">Nama</th>
+                            <th class="col-2">Icon</th>
+                            <th class="col-3">Keterangan</th>
+                            <th class="col-2">Status</th>
+                            <th class="col-2">Action</th>
+                        </tr>
+                        @foreach ($navbar as $index => $item)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $item['menuName'] }}</td>
+                                <td><i class="{{ $item['menuIcon'] }}"></i></td>
+                                <td>{{ $item['menuDesc'] ?? "don't have a caption yet" }}</td>
+                                <td>
+                                    @if ($item['menuStatus'] == 1)
+                                        <div class="badge badge-success">Active</div>
+                                    @else
+                                        <div class="badge badge-danger">Not Active</div>
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="/edit-menu/{{ $item['menuId'] }}" class="btn btn-warning">Update</a>
+                                    <form action="/delete-menu/{{ $item['menuId'] }}" method="post" class="d-inline-block">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
                 </div>
             </div>
             <div class="card-footer text-right">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <nav class="d-inline-block">
+                    <ul class="pagination mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1"><i class="fas fa-chevron-left"></i></a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1 <span
+                                    class="sr-only">(current)</span></a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-        </form>
+        </div>
     </div>
 @endsection
 @section('script')

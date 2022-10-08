@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset('assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/select2/css/select2.min.css') }}">
+    <script src="https://kit.fontawesome.com/768f649122.js" crossorigin="anonymous"></script>
 
 
     <!-- Template CSS -->

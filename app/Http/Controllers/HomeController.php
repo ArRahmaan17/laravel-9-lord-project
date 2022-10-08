@@ -9,19 +9,20 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $menus = DB::table('menus')->get();
-        // dd($menus);
-        // $menus = [
-        //     ['name' => 'Home', 'url' => '/', 'icon' => 'fas fa-fire', 'child' => [
-        //         ['name' => 'cobatest', 'url' => '/cobatest'],
-        //         ['name' => 'cobalagi', 'url' => '/cobalagi'],
-        //         ['name' => 'cobaterus', 'url' => '/cobaterus'],
-        //         ['name' => 'cobacoba', 'url' => '/cobacoba'],
-        //     ]],
-        //     ['name' => 'Profile', 'url' => '/profile', 'icon' => 'far fa-user'],
-        //     ['name' => 'About', 'url' => '/about', 'icon' => 'fas fa-ellipsis-h'],
-        //     ['name' => 'Contact', 'url' => '/contact', 'icon' => 'fas fa-envelope'],
-        // ];
-        return view('index', ['appTitle' => 'Rarewel Lord', 'navbar' => $menus]);
+        $menus = DB::table('menus')->where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
+        $dataMenus = [];
+        foreach ($menus as $key) {
+            $childMenus = DB::table('menus')->where('parentId', '=', $key->id)->get('*');
+            $dataMenus[] = [
+                'menuId' => $key->id,
+                'menuName' => $key->name,
+                'menuUrl' => $key->route,
+                'menuIcon' => $key->icon,
+                'menuStatus' => $key->currentStatus,
+                'menuDesc' => $key->description,
+                'menuChild' => (json_encode($childMenus)) ?? null,
+            ];
+        }
+        return view('index', ['appTitle' => 'Rarewel Lord', 'navbar' => $dataMenus]);
     }
 }

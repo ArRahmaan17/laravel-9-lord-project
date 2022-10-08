@@ -16,8 +16,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', HomeController::class);
+// route for control menu 
 Route::get('/all-menus', [AddMenusController::class, 'index']);
 Route::get('/add-menus', [AddMenusController::class, 'addMenu']);
 Route::post('/insert-menu', [AddMenusController::class, 'insertMenu']);
 Route::get('/edit-menu/{id}', [AddMenusController::class, 'editMenu']);
 Route::put('/update-menu/{id}', [AddMenusController::class, 'updateMenu']);
+Route::delete('/delete-menu/{id}', [AddMenusController::class, 'destroyMenu']);

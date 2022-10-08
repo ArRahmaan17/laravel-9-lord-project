@@ -6,7 +6,8 @@
             @method('put')
             @csrf
             <div class="card-header">
-                <h4>Server-side Validation</h4>
+                <h4 class="col-11">{{ $title }} - {{ $menu->nama }}</h4>
+                <a class="btn btn-info form-control" href="/all-menus">Back</a>
             </div>
             <div class="card-body">
                 <div class="form-group">
@@ -41,10 +42,13 @@
                         <div class="col-6">
                             <label>Your Parent Menu</label>
                             <select name="parent-menu" class="form-control select2">
-                                @foreach ($navbar as $menu)
-                                    <option value="{{ $menu->id }}"
-                                        {{ $menu->parentMenu == $menu->id ? "selected='true" : '' }}>
-                                        {{ $menu->id }}</option>
+                                <option value="0">0</option>
+                                @foreach ($navbar as $item)
+                                    @if ($menu->id_menu == $item->id)
+                                        <option value="{{ $item->id }}" selected='true'>{{ $item->id }}</option>
+                                    @else
+                                        <option value="{{ $item->id }}">{{ $item->id }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
