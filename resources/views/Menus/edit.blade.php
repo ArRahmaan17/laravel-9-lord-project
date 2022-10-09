@@ -6,13 +6,13 @@
             @method('put')
             @csrf
             <div class="card-header">
-                <h4 class="col-11">{{ $title }} - {{ $menu->nama }}</h4>
+                <h4 class="col-11">{{ $title }} - {{ $menu->name }}</h4>
                 <a class="btn btn-info form-control" href="/all-menus">Back</a>
             </div>
             <div class="card-body">
                 <div class="form-group">
                     <label>Your Menu Name</label>
-                    <input type="text" value="{{ $menu->nama }}" name="menu-name" class="form-control">
+                    <input type="text" value="{{ $menu->name }}" name="menu-name" class="form-control">
                     <div class="valid-feedback">
                         Good job!
                     </div>
@@ -30,7 +30,7 @@
                                         <i class="fas fa-route"></i>
                                     </div>
                                 </div>
-                                <input type="text" value="{{ $menu->link }}" name="menu-route" class="form-control">
+                                <input type="text" value="{{ $menu->route }}" name="menu-route" class="form-control">
                                 <div class="valid-feedback">
                                     Good job!
                                 </div>
@@ -41,13 +41,14 @@
                         </div>
                         <div class="col-6">
                             <label>Your Parent Menu</label>
-                            <select name="parent-menu" class="form-control select2">
+                            <select name="parent-menu" {{ $menu->isParent ? 'disabled' : '' }} class="form-control select2">
                                 <option value="0">0</option>
                                 @foreach ($navbar as $item)
-                                    @if ($menu->id_menu == $item->id)
-                                        <option value="{{ $item->id }}" selected='true'>{{ $item->id }}</option>
+                                    @if ($menu->parentId == $item['menuId'])
+                                        <option value="{{ $item['menuId'] }}" selected='true'>{{ $item['menuName'] }}
+                                        </option>
                                     @else
-                                        <option value="{{ $item->id }}">{{ $item->id }}</option>
+                                        <option value="{{ $item['menuId'] }}">{{ $item['menuName'] }}</option>
                                     @endif
                                 @endforeach
                             </select>
@@ -56,7 +57,7 @@
                 </div>
                 <div class="form-group mb-0">
                     <label>Your Menu Describtion</label>
-                    <textarea class="form-control" name="desc-menu">{{ $menu->keterangan }}</textarea>
+                    <textarea class="form-control" name="desc-menu">{{ $menu->description }}</textarea>
                     <div class="invalid-feedback">
                         Oh no! You entered an inappropriate word.
                     </div>

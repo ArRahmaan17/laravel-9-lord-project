@@ -40,6 +40,33 @@
                                     </form>
                                 </td>
                             </tr>
+                            @if (!empty(json_decode($item['menuChild'])))
+                                @foreach (json_decode($item['menuChild']) as $child)
+                                    <tr>
+                                        <td></td>
+                                        <td>{{ $child->name }}</td>
+                                        <td><i class="{{ $child->icon }}"></i></td>
+                                        <td>{{ $child->description != '' ? $child->description : "don't have a caption yet" }}
+                                        </td>
+                                        <td>
+                                            @if ($child->currentStatus == 1)
+                                                <div class="badge badge-success">Active</div>
+                                            @else
+                                                <div class="badge badge-danger">Not Active</div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="/edit-menu/{{ $child->id }}" class="btn btn-warning">Update</a>
+                                            <form action="/delete-menu/{{ $child->id }}" method="post"
+                                                class="d-inline-block">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         @endforeach
                     </table>
                 </div>

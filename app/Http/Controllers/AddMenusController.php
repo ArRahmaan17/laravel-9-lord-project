@@ -31,7 +31,7 @@ class AddMenusController extends Controller
         $menus = DB::table('menus')->where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
         $ordered = DB::table('menus')->orderBy('id', 'desc')->first('ordered');
-        $icon = DB::table('font_aweasome')->orderBy('created_at', 'desc')->get();
+        $icon = DB::table('font_aweasome')->orderBy('created_at', 'asc')->get();
         foreach ($menus as $key) {
             $childMenus = DB::table('menus')->where('parentId', '=', $key->id)->get('*');
             $dataMenus[] = [
@@ -58,6 +58,7 @@ class AddMenusController extends Controller
             'currentStatus' => 1,
             'icon' => 'fas fa-envelope',
             'description' => $request['desc-menu'],
+            'created_at' => date_create(now()),
         ];
         if (DB::table('menus')->insert($dataMenu)) {
             return back();
@@ -90,11 +91,15 @@ class AddMenusController extends Controller
     public function updateMenu(Request $request, $id)
     {
         $dataMenus = [
-            'nama' => $request['menu-name'],
-            'link' => $request['menu-route'],
-            'id_menu' => $request['parent-menu'],
-            'keterangan' => $request['desc-menu'],
+            'name' => $request['menu-name'],
+            'route' => $request['menu-route'],
+            'parentId' => ($request['parent-menu']) ?? 0,
+            'description' => $request['desc-menu'],
+            'updated_at' => date_create(now()),
         ];
+        if ($request['parent-menu'] == 0) {
+            $dataMenus['isParent'] = true;
+        }
         if (DB::table('menus')->where('id', $id)->update($dataMenus)) {
             return redirect('/all-menus');
         }
