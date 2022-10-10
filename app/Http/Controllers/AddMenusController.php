@@ -61,7 +61,17 @@ class AddMenusController extends Controller
             'created_at' => date_create(now()),
         ];
         if (DB::table('menus')->insert($dataMenu)) {
-            return back();
+            $data = DB::getPdo()->lastInsertId();
+            $UserPrivileges = [
+                'idUser' => 1,
+                'idMenus' => $data,
+                'canAccess' => 1,
+                'canChange' => 1,
+                'created_at' => date_create(now('Asia/Jakarta')),
+            ];
+            if (DB::table('users_privileges')->insert($UserPrivileges)) {
+                return back();
+            }
         }
     }
 
@@ -69,6 +79,8 @@ class AddMenusController extends Controller
     {
         $menus = DB::table('menus')->where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
+        $ordered = DB::table('menus')->where('id', '=', $id)->first('ordered');
+        $icon = DB::table('font_aweasome')->orderBy('created_at', 'asc')->get();
         foreach ($menus as $key) {
             $childMenus = DB::table('menus')->where('parentId', '=', $key->id)->get('*');
             $dataMenus[] = [
@@ -85,8 +97,7 @@ class AddMenusController extends Controller
         if (empty($menu)) {
             return redirect('/all-menus');
         }
-
-        return view('Menus.edit', ['title' => "Edit Menus", 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus, 'menu' => $menu]);
+        return view('Menus.edit', ['title' => "Edit Menus", 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus, 'menu' => $menu, 'lastMenuOrdered' => $ordered->ordered, 'icons' => json_encode($icon)]);
     }
     public function updateMenu(Request $request, $id)
     {
@@ -95,13 +106,24 @@ class AddMenusController extends Controller
             'route' => $request['menu-route'],
             'parentId' => ($request['parent-menu']) ?? 0,
             'description' => $request['desc-menu'],
-            'updated_at' => date_create(now()),
+            'updated_at' => date_create(now("Asia/Jakarta")),
         ];
-        if ($request['parent-menu'] == 0) {
+        if ($request['parent-menu'] == '0') {
             $dataMenus['isParent'] = true;
         }
+        $UserPrivileges = [
+            'idUser' => 1,
+            'idMenus' => $id,
+            'canAccess' => true,
+            'canChange' => true,
+            'created_at' => date_create(now('Asia/Jakarta')),
+        ];
+        $data = DB::table('users_privileges')->where('idMenus', '=', $id)->get();
         if (DB::table('menus')->where('id', $id)->update($dataMenus)) {
-            return redirect('/all-menus');
+            if (json_decode(json_encode($data)) == null) {
+                DB::table('users_privileges')->insert($UserPrivileges);
+            }
+            return redirect('/all-menus', 302);
         }
     }
     public function destroyMenu($id)

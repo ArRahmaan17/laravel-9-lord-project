@@ -84,11 +84,4 @@
     </div>
 @endsection
 @section('script')
-    {{-- <script>
-        $("#add-menu").click(function() {
-            alert("coba");
-            let uri = `/insert-menu`;
-            let addMenu = requestAjax(uri, "POST", "")
-        })
-    </script> --}}
 @endsection
