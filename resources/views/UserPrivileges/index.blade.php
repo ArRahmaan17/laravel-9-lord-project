@@ -7,6 +7,21 @@
                 <a class="btn btn-success form-control" href="/add-menus">Tambah Menu</a>
             </div>
             <div class="card-body p-0">
+                <div class="row justify-content-center">
+                    <div class="col-8"></div>
+                    <div class="col-3 my-2">
+                        @if (Session::has('fail'))
+                            <div class="alert alert-danger alert-dismissible show fade">
+                                <div class="alert-body">
+                                    <button class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                    {{ Session::get('fail') }}
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-md">
                         <tr>
@@ -29,15 +44,17 @@
                                 </td>
                                 <td>{{ $item['menuDesc'] ?? "don't have a caption yet" }}</td>
                                 <td>
-                                    <form action="/delete-menu/{{ $item['menuId'] }}" method="post" class="d-inline-block">
+                                    <form action="/can-access/{{ $item['menuId'] }}" method="post" class="d-inline-block">
                                         @csrf
-                                        @method('delete')
-                                        <button type="submit" class="btn btn-danger">Can Access</button>
+                                        @method('put')
+                                        <button type="submit"
+                                            class="btn btn-{{ json_decode($item['menuAccess']) ? 'success' : 'danger' }}">{{ json_decode($item['menuAccess']) ? 'Can Access' : "Can't Access" }}</button>
                                     </form>
-                                    <form action="/delete-menu/{{ $item['menuId'] }}" method="post" class="d-inline-block">
+                                    <form action="/can-change/{{ $item['menuId'] }}" method="post" class="d-inline-block">
                                         @csrf
-                                        @method('delete')
-                                        <button type="submit" class="btn btn-danger">Can Change</button>
+                                        @method('put')
+                                        <button type="submit"
+                                            class="btn btn-{{ json_decode($item['menuChange']) ? 'success' : 'danger' }}">{{ json_decode($item['menuChange']) ? 'Can Change' : "Can't Change" }}</button>
                                     </form>
                                 </td>
                             </tr>

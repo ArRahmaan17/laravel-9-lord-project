@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
+use App\Models\Users_privilege;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -9,10 +11,10 @@ class AddMenusController extends Controller
 {
     public function index()
     {
-        $menus = DB::table('menus')->where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
+        $menus = Menu::where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
         foreach ($menus as $key) {
-            $childMenus = DB::table('menus')->where('parentId', '=', $key->id)->get('*');
+            $childMenus = Menu::where('parentId', '=', $key->id)->get('*');
             $dataMenus[] = [
                 'menuId' => $key->id,
                 'menuName' => $key->name,
@@ -28,12 +30,12 @@ class AddMenusController extends Controller
 
     public function addMenu()
     {
-        $menus = DB::table('menus')->where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
+        $menus = Menu::where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
-        $ordered = DB::table('menus')->orderBy('id', 'desc')->first('ordered');
+        $ordered = Menu::orderBy('id', 'desc')->first('ordered');
         $icon = DB::table('font_aweasome')->orderBy('created_at', 'asc')->get();
         foreach ($menus as $key) {
-            $childMenus = DB::table('menus')->where('parentId', '=', $key->id)->get('*');
+            $childMenus = Menu::where('parentId', '=', $key->id)->get('*');
             $dataMenus[] = [
                 'menuId' => $key->id,
                 'menuName' => $key->name,
@@ -60,7 +62,7 @@ class AddMenusController extends Controller
             'description' => $request['desc-menu'],
             'created_at' => date_create(now()),
         ];
-        if (DB::table('menus')->insert($dataMenu)) {
+        if (Menu::insert($dataMenu)) {
             $data = DB::getPdo()->lastInsertId();
             $UserPrivileges = [
                 'idUser' => 1,
@@ -69,7 +71,7 @@ class AddMenusController extends Controller
                 'canChange' => 1,
                 'created_at' => date_create(now('Asia/Jakarta')),
             ];
-            if (DB::table('users_privileges')->insert($UserPrivileges)) {
+            if (Users_privilege::insert($UserPrivileges)) {
                 return back();
             }
         }
@@ -77,12 +79,12 @@ class AddMenusController extends Controller
 
     public function editMenu($id)
     {
-        $menus = DB::table('menus')->where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
+        $menus = Menu::where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
-        $ordered = DB::table('menus')->where('id', '=', $id)->first('ordered');
+        $ordered = Menu::where('id', '=', $id)->first('ordered');
         $icon = DB::table('font_aweasome')->orderBy('created_at', 'asc')->get();
         foreach ($menus as $key) {
-            $childMenus = DB::table('menus')->where('parentId', '=', $key->id)->get('*');
+            $childMenus = Menu::where('parentId', '=', $key->id)->get('*');
             $dataMenus[] = [
                 'menuId' => $key->id,
                 'menuName' => $key->name,
@@ -93,7 +95,7 @@ class AddMenusController extends Controller
                 'menuChild' => (json_encode($childMenus)) ?? null,
             ];
         }
-        $menu = DB::table('menus')->where('id', $id)->first();
+        $menu = Menu::find($id);
         if (empty($menu)) {
             return redirect('/all-menus');
         }
@@ -118,19 +120,19 @@ class AddMenusController extends Controller
             'canChange' => true,
             'created_at' => date_create(now('Asia/Jakarta')),
         ];
-        $data = DB::table('users_privileges')->where('idMenus', '=', $id)->get();
-        if (DB::table('menus')->where('id', $id)->update($dataMenus)) {
+        $data = Users_privilege::where('idMenus', '=', $id)->get();
+        if (Menu::find($id)->update($dataMenus)) {
             if (json_decode(json_encode($data)) == null) {
-                DB::table('users_privileges')->insert($UserPrivileges);
+                Users_privilege::insert($UserPrivileges);
             }
             return redirect('/all-menus', 302);
         }
     }
     public function destroyMenu($id)
     {
-        $menu = DB::table('menus')->where('parentId', '=', $id)->first();
+        $menu = Menu::where('parentId', '=', $id);
         if (!empty($menu)) {
-            if (DB::table('menus')->where('parentId', '=', $id)->delete()) {
+            if (Menu::where('parentId', '=', $id)->delete()) {
                 return back();
             }
         } else {

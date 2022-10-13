@@ -75,8 +75,6 @@
                 </ul>
             </nav>
             @include('components.sidenavbar')
-            {{-- <x-sidenavbar></x-sidenavbar> --}}
-            <!-- Main Content -->
             <div class="main-content">
                 <section class="section">
                     @yield('content')

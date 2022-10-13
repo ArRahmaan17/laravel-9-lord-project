@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -9,10 +10,10 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $menus = DB::table('menus')->where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
+        $menus = Menu::where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
         foreach ($menus as $key) {
-            $childMenus = DB::table('menus')->where('parentId', '=', $key->id)->get('*');
+            $childMenus = Menu::where('parentId', '=', $key->id)->get('*');
             $dataMenus[] = [
                 'menuId' => $key->id,
                 'menuName' => $key->name,
