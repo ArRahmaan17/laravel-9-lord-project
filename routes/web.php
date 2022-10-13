@@ -26,5 +26,6 @@ Route::put('/update-menu/{id}', [AddMenusController::class, 'updateMenu']);
 Route::delete('/delete-menu/{id}', [AddMenusController::class, 'destroyMenu']);
 // route for userPrivileges
 Route::get('/all-user-privileges', [UserPrivileges::class, 'index']);
-Route::put('/can-access/{id}', [UserPrivileges::class, 'setUserCanAccess']);
-Route::put('/can-change/{id}', [UserPrivileges::class, 'setUserCanChange']);
+Route::put('/privilege/can-access/{id}', [UserPrivileges::class, 'setUserCanAccess']);
+Route::put('/privilege/can-change/{id}', [UserPrivileges::class, 'setUserCanChange']);
+Route::put('/privilege/change-status-menu/{id}', [UserPrivileges::class, 'changeStatus']);

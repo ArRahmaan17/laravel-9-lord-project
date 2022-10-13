@@ -29,7 +29,7 @@ class UserPrivileges extends Controller
                 'menuChild' => (json_encode($childMenus)) ?? null,
             ];
         }
-        return view('UserPrivileges.index', ['title' => "User Privileges", 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus]);
+        return view('UserPrivileges.index', ['title' => "User Privileges", 'userPrivilege' => 1, 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus]);
     }
 
     public function setUserCanAccess($id)
@@ -76,5 +76,24 @@ class UserPrivileges extends Controller
             Users_privilege::where('idMenus', '=', $id)->update($data);
         }
         return redirect('/all-user-privileges');
+    }
+
+    public function changeStatus($id)
+    {
+        $hasil = Menu::where('id', '=', $id)->value('currentStatus');
+        if ($hasil) {
+            $data = [
+                'currentStatus' => false,
+                'updated_at' => date_create(now('Asia/Jakarta'))
+            ];
+            Menu::find($id)->update($data);
+        } else {
+            $data = [
+                'currentStatus' => true,
+                'updated_at' => date_create(now('Asia/Jakarta'))
+            ];
+            Menu::find($id)->update($data);
+        }
+        return back();
     }
 }

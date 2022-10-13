@@ -28,8 +28,8 @@
                             <th class="col-1">#</th>
                             <th class="col-2">Nama</th>
                             <th class="col-2">Status</th>
-                            <th class="col-3">Keterangan</th>
-                            <th class="col-2">Action</th>
+                            <th class="col-2">Keterangan</th>
+                            <th class="col-3">Action</th>
                         </tr>
                         @foreach ($navbar as $index => $item)
                             <tr class="border-bottom shadow-sm ">
@@ -44,18 +44,30 @@
                                 </td>
                                 <td>{{ $item['menuDesc'] ?? "don't have a caption yet" }}</td>
                                 <td>
-                                    <form action="/can-access/{{ $item['menuId'] }}" method="post" class="d-inline-block">
+                                    <form action="/privilege/can-access/{{ $item['menuId'] }}" method="post"
+                                        class="d-inline-block">
                                         @csrf
                                         @method('put')
                                         <button type="submit"
                                             class="btn btn-{{ json_decode($item['menuAccess']) ? 'success' : 'danger' }}">{{ json_decode($item['menuAccess']) ? 'Can Access' : "Can't Access" }}</button>
                                     </form>
-                                    <form action="/can-change/{{ $item['menuId'] }}" method="post" class="d-inline-block">
+                                    <form action="/privilege/can-change/{{ $item['menuId'] }}" method="post"
+                                        class="d-inline-block">
                                         @csrf
                                         @method('put')
                                         <button type="submit"
                                             class="btn btn-{{ json_decode($item['menuChange']) ? 'success' : 'danger' }}">{{ json_decode($item['menuChange']) ? 'Can Change' : "Can't Change" }}</button>
                                     </form>
+                                    @if ($userPrivilege == 1)
+                                        <form action="/privilege/change-status-menu/{{ $item['menuId'] }}" method="post"
+                                            class="d-inline-block">
+                                            @csrf
+                                            @method('put')
+                                            <button type="submit"
+                                                class="btn btn-{{ $item['menuStatus'] ? 'success' : 'danger' }}">{{ $item['menuChange'] ? 'Deactivate' : 'Activate' }}
+                                                Menu</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                             @if (!empty(json_decode($item['menuChild'])))
