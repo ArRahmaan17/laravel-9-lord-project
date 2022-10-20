@@ -75,9 +75,6 @@
                                     <tr>
                                         <td></td>
                                         <td>{{ $child->name }}</td>
-                                        <td><i class="{{ $child->icon }}"></i></td>
-                                        <td>{{ $child->description != '' ? $child->description : "don't have a caption yet" }}
-                                        </td>
                                         <td>
                                             @if ($child->currentStatus == 1)
                                                 <div class="badge badge-success">Active</div>
@@ -85,19 +82,33 @@
                                                 <div class="badge badge-danger">Not Active</div>
                                             @endif
                                         </td>
+                                        <td>{{ $child->description != '' ? $child->description : "don't have a caption yet" }}
+                                        </td>
                                         <td>
-                                            <form action="/delete-menu/{{ $child->id }}" method="post"
+                                            <form action="/privilege/can-access/{{ $child->idMenus }}" method="post"
                                                 class="d-inline-block">
                                                 @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-danger">Can Change</button>
+                                                @method('put')
+                                                <button type="submit"
+                                                    class="btn btn-{{ $child->canAccess ? 'success' : 'danger' }}">{{ $child->canAccess ? 'Can Access' : "Can't Access" }}</button>
                                             </form>
-                                            <form action="/delete-menu/{{ $child->id }}" method="post"
+                                            <form action="/privilege/can-change/{{ $child->idMenus }}" method="post"
                                                 class="d-inline-block">
                                                 @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-danger">Can Access</button>
+                                                @method('put')
+                                                <button type="submit"
+                                                    class="btn btn-{{ $child->canChange ? 'success' : 'danger' }}">{{ $child->canChange ? 'Can Change' : "Can't Change" }}</button>
                                             </form>
+                                            @if ($userPrivilege == 1)
+                                                <form action="/privilege/change-status-menu/{{ $child->idMenus }}"
+                                                    method="post" class="d-inline-block">
+                                                    @csrf
+                                                    @method('put')
+                                                    <button type="submit"
+                                                        class="btn btn-{{ $child->currentStatus ? 'success' : 'danger' }}">{{ $child->currentStatus ? 'Deactivate' : 'Activate' }}
+                                                        Menu</button>
+                                                </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

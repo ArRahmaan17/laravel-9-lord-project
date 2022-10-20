@@ -37,60 +37,8 @@
     <!-- /END GA -->
 </head>
 
-<body>
-    <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-            <div class="navbar-bg"></div>
-            <nav class="navbar navbar-expand-lg main-navbar">
-                <div class="form-inline mr-auto">
-                    <ul class="navbar-nav">
-                        <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i
-                                    class="fas fa-bars"></i></a></li>
-                    </ul>
-                    <h2 class="text-white mt-2">{{ $appTitle }}</h2>
-                </div>
-                <ul class="navbar-nav navbar-right">
-                    <li class="dropdown"><a href="#" data-toggle="dropdown"
-                            class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                            <img alt="image" src="{{ asset('assets/img/avatar/avatar-1.png') }}"
-                                class="rounded-circle mr-1">
-                            <div class="d-sm-none d-lg-inline-block">Hi, Ujang Maman</div>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div class="dropdown-title">Logged in 5 min ago</div>
-                            <a href="features-profile.html" class="dropdown-item has-icon">
-                                <i class="far fa-user"></i> Profile
-                            </a>
-                            <a href="features-activities.html" class="dropdown-item has-icon">
-                                <i class="fas fa-bolt"></i> Activities
-                            </a>
-                            <a href="features-settings.html" class="dropdown-item has-icon">
-                                <i class="fas fa-cog"></i> Settings
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-item has-icon text-danger">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
-            @include('components.sidenavbar')
-            <div class="main-content">
-                @yield('content')
-            </div>
-            <footer class="main-footer">
-                <div class="footer-left">
-                    Copyright &copy; 2022 <div class="bullet"></div> Develop By <a href="#">Maman Recing</a>
-                </div>
-                <div class="footer-right">
-
-                </div>
-            </footer>
-        </div>
-    </div>
-
-    <!-- General JS Scripts -->
+<body class="bg-dark">
+    @yield('contentAuth')
     <script src="{{ asset('assets/modules/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/modules/popper.js') }}"></script>
     <script src="{{ asset('assets/modules/tooltip.js') }}"></script>
@@ -106,27 +54,36 @@
     <script src="{{ asset('assets/modules/summernote/summernote-bs4.js') }}"></script>
     <script src="{{ asset('assets/modules/chocolat/dist/js/jquery.chocolat.min.js') }}"></script>
     <script src="{{ asset('assets/modules/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('assets/js/iziToast.min.js') }}"></script>
     <!-- Page Specific JS File -->
     <script src="{{ asset('assets/js/page/index.js') }}"></script>
 
     <!-- Template JS File -->
     <script src="{{ asset('assets/js/scripts.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/iziToast.min.js') }}"></script>
     <script>
         iziToast.settings({
-            titleSize: '20',
+            timeout: 2000,
+            titleSize: '25',
             closeOnEscape: true,
+            resetOnHover: true,
             position: "topRight",
             closeOnClick: true,
             close: false,
             image: 'https://cdn3.iconfinder.com/data/icons/race-1-color-with-outline/300/Racing_circuit-512.png',
-            layout: 1,
+            layout: 2,
             icon: '',
             progressBarColor: 'rgb(0, 0, 0)',
             transitionIn: 'flipInX',
             transitionOut: 'flipOutX',
         });
+        $(document).ready(() => {
+            iziToast.info({
+                title: 'Hello',
+                message: 'Welcome!',
+            });
+        })
+
         let requestAjax = (uri, method, payload, elementMessage, asyncVal = true, elementLoad = null) => {
             let csrfName = $('#csrf').attr('name'),
                 csrfHash = $('#csrf').val();
@@ -156,7 +113,14 @@
                     // (data?.hasil && data?.pesan) && toastSuccess(data.pesan)
                 },
                 error: function(err) {
-                    toastError(JSON.parse(err.responseText));
+                    iziToast.error({
+                        timeout: 3000,
+                        overlay: false,
+                        title: 'Gagal',
+                        message: err.responseText,
+                        position: 'topRight',
+                        drag: false,
+                    });
                     console.log('error request', err.responseText)
                 },
                 complete: function(event, xhr, options) {
@@ -166,20 +130,12 @@
                         icon: 'fa fa-chrome',
                         title: resp.hasil ? 'Success' : 'Failed',
                         message: resp.pesan,
+                        position: 'topRight',
+                        drag: false,
+                        overlay: false,
                     });
                 }
             });
         }
-
-        function toastError(message) {
-            iziToast.error({
-                timeout: 3000,
-                title: 'Failed',
-                message: message,
-            });
-        }
     </script>
-    @yield('script')
 </body>
-
-</html>

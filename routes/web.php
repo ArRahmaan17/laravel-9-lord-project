@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddMenusController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserPrivileges;
 use Illuminate\Support\Facades\Route;
@@ -16,14 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', HomeController::class);
+// Login
+Route::get('/', [AuthController::class, 'index']);
+Route::post('/authentication', [AuthController::class, 'authentication']);
+Route::get('/register', [AuthController::class, 'registration']);
+Route::post('/create-user', [AuthController::class, 'createUser']);
+
 // route for control menu
-Route::get('/all-menus', [AddMenusController::class, 'index']);
-Route::get('/add-menus', [AddMenusController::class, 'addMenu']);
-Route::post('/insert-menu', [AddMenusController::class, 'insertMenu']);
-Route::get('/edit-menu/{id}', [AddMenusController::class, 'editMenu']);
-Route::put('/update-menu/{id}', [AddMenusController::class, 'updateMenu']);
-Route::delete('/delete-menu/{id}', [AddMenusController::class, 'destroyMenu']);
+Route::resource('menus', AddMenusController::class);
+
 // route for userPrivileges
 Route::get('/all-user-privileges', [UserPrivileges::class, 'index']);
 Route::put('/privilege/can-access/{id}', [UserPrivileges::class, 'setUserCanAccess']);

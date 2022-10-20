@@ -13,6 +13,8 @@ class AddMenusController extends Controller
     {
         $menus = Menu::where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
+        $ordered = Menu::orderBy('id', 'desc')->first('ordered');
+        $icon = DB::table('font_aweasome')->orderBy('created_at', 'asc')->get();
         foreach ($menus as $key) {
             $childMenus = Menu::where('parentId', '=', $key->id)->get('*');
             $dataMenus[] = [
@@ -25,10 +27,10 @@ class AddMenusController extends Controller
                 'menuChild' => (json_encode($childMenus)) ?? null,
             ];
         }
-        return view('Menus.index', ['title' => "List Menus", 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus]);
+        return view('Menus.index', ['title' => "List Menus", 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus, 'lastMenuOrdered' => $ordered->ordered + 1, 'icons' => json_encode($icon)]);
     }
 
-    public function addMenu()
+    public function create()
     {
         $menus = Menu::where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
@@ -49,8 +51,9 @@ class AddMenusController extends Controller
         return view('Menus.add', ['title' => "Add Menus", 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus, 'lastMenuOrdered' => $ordered->ordered + 1, 'icons' => json_encode($icon)]);
     }
 
-    public function insertMenu(Request $request)
+    public function store(Request $request)
     {
+        dd($request);
         $dataMenu = [
             'name' => $request['menu-name'],
             'route' => $request['menu-route'],
@@ -60,7 +63,7 @@ class AddMenusController extends Controller
             'currentStatus' => 1,
             'icon' => 'fas fa-envelope',
             'description' => $request['desc-menu'],
-            'created_at' => date_create(now()),
+            'created_at' => now('Asia/Jakarta'),
         ];
         if (Menu::insert($dataMenu)) {
             $data = DB::getPdo()->lastInsertId();
@@ -69,7 +72,7 @@ class AddMenusController extends Controller
                 'idMenus' => $data,
                 'canAccess' => 1,
                 'canChange' => 1,
-                'created_at' => date_create(now('Asia/Jakarta')),
+                'created_at' => now('Asia/Jakarta'),
             ];
             if (Users_privilege::insert($UserPrivileges)) {
                 return back();
@@ -77,7 +80,7 @@ class AddMenusController extends Controller
         }
     }
 
-    public function editMenu($id)
+    public function show($id)
     {
         $menus = Menu::where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
@@ -101,7 +104,7 @@ class AddMenusController extends Controller
         }
         return view('Menus.edit', ['title' => "Edit Menus", 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus, 'menu' => $menu, 'lastMenuOrdered' => $ordered->ordered, 'icons' => json_encode($icon)]);
     }
-    public function updateMenu(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $dataMenus = [
             'name' => $request['menu-name'],
@@ -125,18 +128,18 @@ class AddMenusController extends Controller
             if (json_decode(json_encode($data)) == null) {
                 Users_privilege::insert($UserPrivileges);
             }
-            return redirect('/all-menus', 302);
+            return redirect('/menus', 302);
         }
     }
-    public function destroyMenu($id)
+    public function destroy($id)
     {
-        $menu = Menu::where('parentId', '=', $id);
-        if (!empty($menu)) {
-            if (Menu::where('parentId', '=', $id)->delete()) {
-                return back();
+        $menu = Menu::where('parentId', '=', $id)->get();
+        if ($menu->isEmpty()) {
+            if (Menu::find($id)->delete()) {
+                return redirect('/menus', 302);
             }
         } else {
-            return back();
+            return redirect('/menus', 302)->with(['error' => true, 'message' => 'Tidak Dapat Menghapus Parent Menu Yang Masih memiliki Child Menu']);
         }
     }
 }

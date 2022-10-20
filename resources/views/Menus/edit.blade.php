@@ -2,12 +2,12 @@
 
 @section('content')
     <div class="card">
-        <form action="/update-menu/{{ $menu->id }}" method="POST" autocomplete="off">
+        <form action="{{ route('menus.update', $menu->id) }}" method="POST" autocomplete="off">
             @method('put')
             @csrf
             <div class="card-header">
                 <h4 class="col-11">{{ $title }} - {{ $menu->name }}</h4>
-                <a class="btn btn-info form-control" href="/all-menus">Back</a>
+                <a class="btn btn-info form-control" href="{{ route('menus.index') }}">Back</a>
             </div>
             <div class="card-body">
                 <div class="form-group">
@@ -71,7 +71,7 @@
                             </div>
                             <div class="col-4">
                                 <label>Your Icon Menu</label>
-                                <select name="parent-menu" class="form-control select2">
+                                <select name="icon-menu" class="form-control select2">
                                     <option value="0">0</option>
                                     @foreach (json_decode($icons) as $icon)
                                         <option value="{{ $icon->id }}"

@@ -14,7 +14,7 @@ class UserPrivileges extends Controller
         $menus = Menu::where('isParent', '=', 1)->orderBy('ordered', 'asc')->get();
         $dataMenus = [];
         foreach ($menus as $key) {
-            $childMenus = Menu::where('parentId', '=', $key->id)->get('*');
+            $childMenus = Menu::where('parentId', '=', $key->id)->leftJoin('users_privileges', 'menus.id', "=", 'users_privileges.idMenus')->get('*');
             $hasAccess = Users_privilege::where('idMenus', '=', $key->id)->value('canAccess');
             $hasChange = Users_privilege::where('idMenus', '=', $key->id)->value('canChange');
             $dataMenus[] = [
@@ -29,6 +29,7 @@ class UserPrivileges extends Controller
                 'menuChild' => (json_encode($childMenus)) ?? null,
             ];
         }
+        // dd($dataMenus);
         return view('UserPrivileges.index', ['title' => "User Privileges", 'userPrivilege' => 1, 'appTitle' => "Rarewel Lord", 'navbar' => $dataMenus]);
     }
 
