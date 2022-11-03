@@ -4,7 +4,6 @@
         <div class="card">
             <div class="card-header col-12">
                 <h4 class="col-10">{{ $title }}</h4>
-                <a class="btn btn-success form-control" href="/add-menus">Tambah Menu</a>
             </div>
             <div class="card-body p-0">
                 <div class="row justify-content-center">

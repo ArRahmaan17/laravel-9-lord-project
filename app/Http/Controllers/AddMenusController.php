@@ -53,7 +53,6 @@ class AddMenusController extends Controller
 
     public function store(Request $request)
     {
-        dd($request);
         $dataMenu = [
             'name' => $request['menu-name'],
             'route' => $request['menu-route'],

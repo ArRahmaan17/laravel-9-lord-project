@@ -7,6 +7,7 @@ use Illuminate\Hashing\BcryptHasher;
 use Illuminate\Http\Request;
 use Illuminate\Queue\RedisQueue;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -27,7 +28,7 @@ class AuthController extends Controller
             'name' => $username,
             'email' => $username,
             'email_verified_at' => date_create(now('Asia/Jakarta')),
-            'password' => $password,
+            'password' => bcrypt($password),
             'created_at' => date_create(now('Asia/Jakarta')),
         ];
         if (!User::create($createUser)) {
@@ -39,9 +40,11 @@ class AuthController extends Controller
     {
         $username = $request['login-username'];
         $password = $request['login-password'];
-        $userData = DB::table('users')->where('name', $username)->where('password', $password)->get('name');
-        if (count($userData) === 1) {
-            return redirect('/menus');
+        $userData = User::where('name', $username)->first();
+        if ($userData) {
+            if (Hash::check($password, $userData->password)) {
+                return redirect('/menus');
+            }
         }
         return redirect('/');
     }
