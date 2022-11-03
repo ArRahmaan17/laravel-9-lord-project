@@ -7,7 +7,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="bg-dark p-0 m-0" data-action="{{ route('menus.store') }}" method="POST" autocomplete="off">
+            <form class="bg-dark p-0 m-0" id="form-add-menus" data-action="{{ route('menus.store') }}" method="POST"
+                autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">

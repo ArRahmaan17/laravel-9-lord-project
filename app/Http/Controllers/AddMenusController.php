@@ -74,7 +74,11 @@ class AddMenusController extends Controller
                 'created_at' => now('Asia/Jakarta'),
             ];
             if (Users_privilege::insert($UserPrivileges)) {
-                return back();
+                $response = [
+                    'status' => 'success',
+                    'message' => "Success Saving Menu"
+                ];
+                return response($response, 200);
             }
         }
     }

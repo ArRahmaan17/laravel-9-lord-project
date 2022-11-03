@@ -112,15 +112,13 @@
             $("#modal-create-new-menu").modal('show');
         }
 
+
         function saveMenus() {
             let requiredInput = $("#modal-create-new-menu").find('input.form-control');
             let requiredSelect = $("#modal-create-new-menu").find('select.select2');
             let valid = 1
             let payload = {}
-            // let requiredInput = [
-            //     'menu-order',
-            //     'parent-menu',
-            // ]
+            payload['_token'] = $(document).find('meta[name="csrf-token"').attr('content');
             requiredInput.each(function() {
                 if ($(this).val() == "") {
                     toastError($(this).attr('name').split('-').join(" ") + " must be not null");
@@ -130,22 +128,27 @@
                 }
             });
             requiredSelect.each(function() {
-                if ($(this).val() == 0) {
+                if ($(this).val() == 0 && $(this).attr('name') != 'parent-menu') {
                     toastError($(this).attr('name').split('-').join(" ") + " must be not null");
                     valid = 0
                 } else {
                     payload[$(this).attr('name')] = $(this).val();
                 }
             });
-            // if (valid == 0) {
-            //     $.ajax({
-            //         url: {{ route('menus.store') }},
-            //         type: "POST",
-            //         data: {
-            //             ...payload
-            //         }
-            //     })
-            // }
+            payload['desc-menu'] = $('textarea[name="desc-menu"]').val()
+            if (valid) {
+                console.log($("#form-add-menus").data('action'))
+                $.ajax({
+                    url: $("#form-add-menus").data('action'),
+                    type: "POST",
+                    data: {
+                        ...payload
+                    },
+                    success: data => {
+                        console.log(data);
+                    }
+                })
+            }
         }
     </script>
 @endsection
