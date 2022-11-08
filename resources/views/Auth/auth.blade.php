@@ -12,12 +12,22 @@
                         <h4>Login</h4>
                     </div>
                     <div class="card-body">
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger">
+                                <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <form method="POST" action="/authentication" class="needs-validation" novalidate="">
                             @csrf
                             <div class="form-group">
                                 <label for="login-username">Username</label>
-                                <input id="login-username" type="text" class="form-control" name="login-username"
-                                    tabindex="1" required autofocus>
+                                <input id="login-username" type="text" class="form-control" name="name" tabindex="1"
+                                    required autofocus value="{{ \Session::get('name') ?? '' }}">
                                 <div class="invalid-feedback">
                                     Please fill in your email
                                 </div>
@@ -32,8 +42,8 @@
                                         </a>
                                     </div>
                                 </div>
-                                <input id="login-password" type="password" class="form-control" name="login-password"
-                                    tabindex="2" required>
+                                <input id="login-password" type="password" class="form-control" name="password"
+                                    tabindex="2" value="{{ \Session::get('email') ?? '' }}" required>
                                 <div class="invalid-feedback">
                                     please fill in your password
                                 </div>

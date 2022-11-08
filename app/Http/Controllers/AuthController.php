@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\auth\registerRequest;
 use App\Models\User;
-use Illuminate\Hashing\BcryptHasher;
 use Illuminate\Http\Request;
-use Illuminate\Queue\RedisQueue;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -19,32 +17,27 @@ class AuthController extends Controller
     {
         return view('Auth.register', ['appTitle' => 'Ra Rewel Lord']);
     }
-    public function createUser(Request $request)
+    public function createUser(registerRequest $request)
     {
-        $username = $request['register-username'];
-        $email = $request['register-email'];
-        $password = $request['register-password'];
-        $createUser = [
-            'name' => $username,
-            'email' => $username,
-            'email_verified_at' => date_create(now('Asia/Jakarta')),
-            'password' => bcrypt($password),
-            'created_at' => date_create(now('Asia/Jakarta')),
-        ];
-        if (!User::create($createUser)) {
-            return back()->with(['username' => $username, 'email' => $email, 'message' => 'Gagal melakukan registrasi user']);
+        // $username = $request['name'];
+        // $email = $request['email'];
+        // $password = $request['password'];
+        // $request->validate(['name' => 'required', 'email' => 'required|unique:users|email', 'password' => 'required']);
+        // $createUser = [
+        //     'name' => $username,
+        //     'email' => $username,
+        //     'password' => bcrypt($password),
+        // ];
+        if (!User::create($request->getUser())) {
+            return back()->withErrors($request);
         };
         return redirect('/');
     }
     public function authentication(Request $request)
     {
-        $username = $request['login-username'];
-        $password = $request['login-password'];
-        $userData = User::where('name', $username)->first();
-        if ($userData) {
-            if (Hash::check($password, $userData->password)) {
-                return redirect('/menus');
-            }
+        $attributes = $request->validate(['name' => 'required', 'password' => 'required']);
+        if (Auth::attempt($attributes)) {
+            return redirect('/menus');
         }
         return redirect('/');
     }

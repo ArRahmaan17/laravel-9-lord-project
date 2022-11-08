@@ -15,19 +15,19 @@
                         <form method="POST" action="/create-user" class="needs-validation" novalidate="">
                             @csrf
                             <div class="form-group">
-                                <label for="register-username">Username</label>
-                                <input id="register-username" type="text" value="{{ \Session::get('username') ?? '' }}"
-                                    class="form-control {{ \Session::get('username') ? 'is-invalid' : '' }}"
-                                    name="register-username" tabindex="1" required autofocus>
+                                <label for="name">Username</label>
+                                <input id="name" type="text" value="{{ \Session::get('name') ?? '' }}"
+                                    class="form-control {{ \Session::get('name') ? 'is-invalid' : '' }}" name="name"
+                                    tabindex="1" required autofocus>
                                 <div class="invalid-feedback">
                                     Please Check your username
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="register-email">Email</label>
-                                <input id="register-email" type="text"
+                                <label for="email">Email</label>
+                                <input id="email" type="text"
                                     class="form-control {{ \Session::get('email') ? 'is-invalid' : '' }}"
-                                    value="{{ \Session::get('email') ?? '' }}" name="register-email" tabindex="1" required
+                                    value="{{ \Session::get('email') ?? '' }}" name="email" tabindex="1" required
                                     autofocus>
                                 <div class="invalid-feedback">
                                     Please Check your email
@@ -35,9 +35,9 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="register-password">Password</label>
-                                <input id="register-password" type="password" class="form-control" name="register-password"
-                                    tabindex="1" required autofocus>
+                                <label for="password">Password</label>
+                                <input id="password" type="password" class="form-control" name="password" tabindex="1"
+                                    required autofocus>
                                 <div class="invalid-feedback">
                                     Please Check your password
                                 </div>
