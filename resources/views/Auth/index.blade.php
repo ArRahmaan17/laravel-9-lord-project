@@ -78,7 +78,6 @@
             transitionIn: 'flipInX',
             transitionOut: 'flipOutX',
         });
-        $(document).ready(() => {})
 
         let requestAjax = (uri, method, payload, elementMessage, asyncVal = true, elementLoad = null) => {
             let csrfName = $('#csrf').attr('name'),
