@@ -29,7 +29,7 @@ class registerRequest extends FormRequest
             'password' => 'required|min:8'
         ];
     }
-    public function getUser()
+    public function createUser()
     {
         $data = [
             'name' => $this->name,

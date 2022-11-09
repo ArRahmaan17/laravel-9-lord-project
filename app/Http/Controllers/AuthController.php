@@ -19,17 +19,9 @@ class AuthController extends Controller
     }
     public function createUser(registerRequest $request)
     {
-        // $username = $request['name'];
-        // $email = $request['email'];
-        // $password = $request['password'];
-        // $request->validate(['name' => 'required', 'email' => 'required|unique:users|email', 'password' => 'required']);
-        // $createUser = [
-        //     'name' => $username,
-        //     'email' => $username,
-        //     'password' => bcrypt($password),
-        // ];
-        if (!User::create($request->getUser())) {
-            return back()->withErrors($request);
+        dd($request);
+        if (!User::create($request->createUser())) {
+            return response(json_encode($request), 401);
         };
         return redirect('/');
     }
