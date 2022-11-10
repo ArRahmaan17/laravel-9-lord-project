@@ -14,7 +14,7 @@
                     <div class="card-body">
                         <div id="register-errors-alert" class="container-fluid p-0 m-0 collapse">
                             <div class="alert alert-danger alert-has-icon collapse">
-                                <div class="alert-icon "><i style="font-size: 30px" class="fa fa-warning"></i>
+                                <div class="alert-icon "><i style="font-size: 25px" class="fa fa-warning"></i>
                                 </div>
                                 <div class="alert-body">
                                     <div class="alert-title text-capitalize"></div>

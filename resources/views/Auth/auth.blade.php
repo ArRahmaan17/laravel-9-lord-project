@@ -12,44 +12,42 @@
                         <h4>Login</h4>
                     </div>
                     <div class="card-body">
-                        @if (count($errors) > 0)
-                            <div class="alert alert-danger">
-                                <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+                        <div id="login-errors-alert" class="container-fluid p-0 m-0 collapse">
+                            <div class="alert alert-danger alert-has-icon">
+                                <div class="alert-icon "><i style="font-size: 25px" class="fa fa-warning"></i>
+                                </div>
+                                <div class="alert-body">
+                                    <div class="alert-title text-capitalize"></div>
+                                    <span class="list-errors"></span>
+                                </div>
                             </div>
-                        @endif
-                        <form method="POST" action="/authentication" class="needs-validation" novalidate="">
+                        </div>
+                        <form url="{{ url('/authentication') }}" class="needs-validation" novalidate="">
                             @csrf
                             <div class="form-group">
-                                <label for="login-username">Username</label>
-                                <input id="login-username" type="text" class="form-control" name="name" tabindex="1"
-                                    required autofocus value="{{ \Session::get('name') ?? '' }}">
+                                <label for="name">Username</label>
+                                <input type="text" class="form-control" id="name" tabindex="1" autofocus>
                                 <div class="invalid-feedback">
                                     Please fill in your email
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <div class="d-block">
-                                    <label for="login-password" class="control-label">Password</label>
+                                    <label for="password" class="control-label">Password</label>
                                     <div class="float-right">
                                         <a href="/" class="text-small text-danger">
                                             Forgot Password?
                                         </a>
                                     </div>
                                 </div>
-                                <input id="login-password" type="password" class="form-control" name="password"
-                                    tabindex="2" value="{{ \Session::get('email') ?? '' }}" required>
+                                <input type="password" class="form-control" id="password" tabindex="2" required>
                                 <div class="invalid-feedback">
                                     please fill in your password
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-danger btn-lg btn-block" tabindex="4">
+                                <button type="submit" class="btn btn-danger btn-lg btn-block" id="login-button"
+                                    tabindex="4">
                                     Login
                                 </button>
                             </div>
@@ -64,4 +62,38 @@
     </div>
 @endsection
 @section('scriptAuthentication')
+    <script>
+        $(document).ready(function() {
+            let _token = $(document).find('meta[name="csrf-token"]').attr('content');
+            $("form").submit(function(e) {
+                e.preventDefault();
+                let url = $("form").attr('url');
+                let payload = {};
+                payload['_token'] = _token;
+                requiredLoginInput = $('form').find('.form-control');
+                requiredLoginInput.each(function() {
+                    payload[$(this).attr('id')] = $(this).val();
+                });
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        ...payload
+                    },
+                    dataType: "JSON",
+                    success: function(response) {
+                        console.log(response)
+                        // if () {}
+                    },
+                    error: function(error) {
+                        $("#login-errors-alert").removeClass('collapse')
+                        $(".alert-title").append(error.responseJSON.message);
+                        Object.values(error.responseJSON.errors).map((value) => {
+                            $('span.list-errors').append(value[0] + '<br>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

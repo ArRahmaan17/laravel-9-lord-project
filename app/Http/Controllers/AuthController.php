@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\auth\loginRequest;
 use App\Http\Requests\auth\registerRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,18 +20,24 @@ class AuthController extends Controller
     }
     public function createUser(registerRequest $request)
     {
-        dd($request);
         if (!User::create($request->createUser())) {
             return response(json_encode($request), 401);
         };
         return redirect('/');
     }
-    public function authentication(Request $request)
+    public function authentication(loginRequest $request)
     {
-        $attributes = $request->validate(['name' => 'required', 'password' => 'required']);
-        if (Auth::attempt($attributes)) {
-            return redirect('/menus');
+        if (!Auth::attempt($request->userAccount())) {
+            $response = [
+                'status' => false,
+                'message' => 'username and password are incorrect',
+            ];
+            return response(json_encode($response), 401);
         }
-        return redirect('/');
+        $response = [
+            'status' => true,
+            'message' => 'your successfully login on this website'
+        ];
+        return response(json_encode($response), 200);
     }
 }
